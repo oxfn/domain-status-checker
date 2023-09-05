@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import socket
 from itertools import product
@@ -16,7 +17,6 @@ def get_addr(host: str) -> Optional[str]:
     try:
         return socket.gethostbyname(host)
     except Exception:
-        # logger.error('Error getting addr: %s', e)
         return None
 
 
@@ -52,10 +52,10 @@ def get_whois_statuses(data: dict) -> list[str]:
     return result
 
 
-def get_domain_info(domain: str) -> Domain:
+async def get_domain_info(domain: str) -> Domain:
     """Get full domain info."""
-    addr = get_addr(domain)
-    whois = get_whois(domain)
+    addr = await asyncio.get_running_loop().run_in_executor(None, lambda: get_addr(domain))
+    whois = await asyncio.get_running_loop().run_in_executor(None, lambda: get_whois(domain))
     return Domain(
         id=None,
         name=domain,

@@ -1,19 +1,17 @@
+import asyncio
 import logging
 import sqlite3
 
 from .models import Domain
-from .queries import (
-    SQL_INIT,
-    SQL_SELECT_DOMAIN,
-    SQL_SELECT_EMPTY_DOMAINS,
-    SQL_UPSERT_DOMAIN,
-)
+from .queries import SQL_INIT, SQL_SELECT_DOMAIN, SQL_SELECT_EMPTY_DOMAINS, SQL_UPSERT_DOMAIN
 
 logger = logging.getLogger(__name__)
 
 
 class Database:
     """Database interface."""
+
+    lock = asyncio.Lock()
 
     def __init__(self, path: str = None):
         """Initializer."""
